@@ -6,6 +6,13 @@ export function TaskList({task}){
 
     const [taskArray, setTaskArray] = useState([])
 
+    const deleteTask = (indexToDelete) => {
+        setTaskArray(() => [
+            ...taskArray.slice(0, indexToDelete),
+            ...taskArray.slice(indexToDelete + 1)
+        ]);
+    };
+
     useEffect(()=>{
         if(task === "") return;
         console.log("task is :" +task);
@@ -27,7 +34,7 @@ export function TaskList({task}){
     }, []);
 
     return (
-        <div className="bg-red-400 mt-3">
+        <div className="bg-red-400 mt-3 mb-3">
             <div className="text-3xl ">TaskList</div>
 
             <div className="flex  justify-between m-4">
@@ -39,7 +46,7 @@ export function TaskList({task}){
                 {taskArray.map((task, index) => {
                     return (
                         <li key={index} className={"mb-3"}>
-                            <TaskItem task={task}/>
+                            <TaskItem task={task} deleteTask={deleteTask} index={index}/>
                         </li>
                     )
                 })}
