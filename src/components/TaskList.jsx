@@ -28,6 +28,12 @@ export function TaskList({ task }) {
         });
     };
 
+    const updateTask = (taskId, newTaskText) => {
+        setTaskArray((prevTaskArray) => prevTaskArray.map(task =>
+            task.id === taskId ? { ...task, text: newTaskText } : task
+        ));
+    };
+
     useEffect(() => {
         if (task === "" || task === undefined) return;
         const newTask = { id: generateUniqueId(), text: task };
@@ -52,6 +58,7 @@ export function TaskList({ task }) {
                             taskId={id}
                             completedFlag={!!completedTasks[id]}
                             clickedOnCompletedTask={() => clickedOnCompletedTask(id)}
+                            updateTask={updateTask}
                         />
                     </li>
                 ))}
