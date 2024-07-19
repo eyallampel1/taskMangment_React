@@ -7,6 +7,43 @@ export function TaskList({ task }) {
     const [completedTasks, setCompletedTasks] = useState({});
     const [idCounter, setIdCounter] = useState(0);
     const [filter, setFilter] = useState("All");
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Load tasks from local storage on component mount
+    useEffect(() => {
+        if (!isMounted) return;
+
+        const savedTasks = JSON.parse(localStorage.getItem("taskArray")) || [];
+        const savedCompletedTasks = JSON.parse(localStorage.getItem("completedTasks")) || {};
+        const savedIdCounter = JSON.parse(localStorage.getItem("idCounter")) || 0;
+
+        console.log("Loading tasks from local storage:");
+        console.log("Saved tasks:", savedTasks);
+        console.log("Saved completed tasks:", savedCompletedTasks);
+        console.log("Saved ID counter:", savedIdCounter);
+
+        setTaskArray(savedTasks);
+        setCompletedTasks(savedCompletedTasks);
+        setIdCounter(savedIdCounter);
+    }, [isMounted]);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // Save tasks to local storage whenever taskArray, completedTasks, or idCounter changes
+    useEffect(() => {
+        if (!isMounted) return;
+
+        console.log("Saving tasks to local storage:");
+        console.log("Task array:", taskArray);
+        console.log("Completed tasks:", completedTasks);
+        console.log("ID counter:", idCounter);
+
+        localStorage.setItem("taskArray", JSON.stringify(taskArray));
+        localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+        localStorage.setItem("idCounter", JSON.stringify(idCounter));
+    }, [taskArray, completedTasks, idCounter, isMounted]);
 
     const generateUniqueId = () => {
         setIdCounter(prevIdCounter => prevIdCounter + 1);
@@ -38,6 +75,7 @@ export function TaskList({ task }) {
     useEffect(() => {
         if (task === "" || task === undefined) return;
         const newTask = { id: generateUniqueId(), text: task };
+        console.log("Adding new task:", newTask);
         setTaskArray((prevTaskArray) => [...prevTaskArray, newTask]);
     }, [task]);
 
