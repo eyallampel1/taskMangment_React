@@ -1,8 +1,13 @@
 // eslint-disable-next-line react/prop-types
-export function TaskItem({task,deleteTask,index}){
+import {useState} from "react";
+
+export function TaskItem({task,deleteTask,index,completedFlag,clickedOnCompletedTask}){
+
+
+
     return (
-        <div className="flex  items-center justify-between ">
-            <div className="text-3xl bg-green-500 hover:bg-green-300">TaskItem is : {task}</div>
+        <div className={`flex  items-center justify-between border border-black border-2 p-4 ${completedFlag?"bg-green-500":""}`}>
+            <div className={`text-3xl bg-blue-500 hover:bg-blue-300 ${completedFlag?"line-through":""}`}>TaskItem is : {task}</div>
 
             <div className={"flex"}>
                 <button
@@ -10,11 +15,13 @@ export function TaskItem({task,deleteTask,index}){
                     Edit
                 </button>
                 <button
+                    onClick={()=>{clickedOnCompletedTask(index)}}
                     className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600  mr-2">
-                    Completed
+                    {completedFlag?"Undo":"Completed"}
                 </button>
                 <button
-                    onClick={() => {deleteTask(index)} }
+                    onClick={() => {deleteTask(index);
+                }}
                     className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 mr-2 ">
                     Delete
                 </button>

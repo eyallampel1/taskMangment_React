@@ -11,7 +11,7 @@ export function TaskForm({setTask}){
                        placeholder="Add Task Here"/>
                 <div className={"flex justify-center"}>
                     <button onClick={ ()=>{setTask(task)} } className={"bg-green-500 text-white p-2 rounded hover:bg-green-300 mb-3"}>
-                Add Task</button>
+                        Add Task</button>
                 </div>
             </div>
         </div>
