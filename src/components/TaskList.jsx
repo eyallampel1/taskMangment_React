@@ -5,41 +5,34 @@ import { useEffect, useState } from "react";
 export function TaskList({ task }) {
     const [taskArray, setTaskArray] = useState([]);
     const [completedTasks, setCompletedTasks] = useState({});
+    const [idCounter, setIdCounter] = useState(0);
 
-    const clickedOnCompletedTask = (taskIndex) => {
+    const generateUniqueId = () => {
+        setIdCounter(prevIdCounter => prevIdCounter + 1);
+        return Date.now() + idCounter;
+    };
+
+    const clickedOnCompletedTask = (taskId) => {
         setCompletedTasks((prevCompletedTasks) => ({
             ...prevCompletedTasks,
-            [taskIndex]: !prevCompletedTasks[taskIndex],
+            [taskId]: !prevCompletedTasks[taskId],
         }));
     };
 
-    const deleteTask = (indexToDelete) => {
-        setTaskArray((prevTaskArray) => [
-            ...prevTaskArray.slice(0, indexToDelete),
-            ...prevTaskArray.slice(indexToDelete + 1),
-        ]);
+    const deleteTask = (taskIdToDelete) => {
+        setTaskArray((prevTaskArray) => prevTaskArray.filter(task => task.id !== taskIdToDelete));
         setCompletedTasks((prevCompletedTasks) => {
             const updatedCompletedTasks = { ...prevCompletedTasks };
-            delete updatedCompletedTasks[indexToDelete];
+            delete updatedCompletedTasks[taskIdToDelete];
             return updatedCompletedTasks;
         });
     };
 
     useEffect(() => {
-        if (task === "") return;
-        setTaskArray((prevTaskArray) => [...prevTaskArray, task]);
+        if (task === "" || task === undefined) return;
+        const newTask = { id: generateUniqueId(), text: task };
+        setTaskArray((prevTaskArray) => [...prevTaskArray, newTask]);
     }, [task]);
-
-    useEffect(() => {
-        if (taskArray.length > 0) {
-            console.log("Task Array is :", taskArray);
-            console.log("Latest task is :", taskArray[taskArray.length - 1]);
-        }
-    }, [taskArray]);
-
-    useEffect(() => {
-        setTaskArray(taskArray.slice(1));
-    }, []);
 
     return (
         <div className="bg-red-400 mt-3 mb-3">
@@ -51,14 +44,14 @@ export function TaskList({ task }) {
                 <button className="bg-blue-500 text-white p-2 rounded hover:bg-blue-300 mb-3">All</button>
             </div>
             <ul>
-                {taskArray.map((task, index) => (
-                    <li key={index} className="mb-3">
+                {taskArray.map(({ id, text }) => (
+                    <li key={id} className="mb-3">
                         <TaskItem
-                            task={task}
-                            deleteTask={deleteTask}
-                            index={index}
-                            completedFlag={!!completedTasks[index]}
-                            clickedOnCompletedTask={clickedOnCompletedTask}
+                            task={text}
+                            deleteTask={() => deleteTask(id)}
+                            taskId={id}
+                            completedFlag={!!completedTasks[id]}
+                            clickedOnCompletedTask={() => clickedOnCompletedTask(id)}
                         />
                     </li>
                 ))}
